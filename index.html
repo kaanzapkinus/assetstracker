@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetPulse | Crypto Portfolio Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="glow-layer"></div>
+    <header class="masthead">
+        <div class="brand">
+            <span class="logo-mark">AP</span>
+            <div>
+                <p class="title">AssetPulse</p>
+                <p class="subtitle">CoinMarketCap powered tracker</p>
+            </div>
+        </div>
+        <div class="status">
+            <p class="timestamp" id="lastUpdated">Veri bekleniyor…</p>
+            <button class="ghost-btn small" id="refreshAll">Yenile</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="intro">
+                <p class="eyebrow">Gerçek zamanlı kripto paneli</p>
+                <h1>Kendi varlık tahtanı yaz, kârını anında gör.</h1>
+                <p class="description">
+                    CoinMarketCap API’sinden gelen canlı fiyatlarla Bitcoin, Ethereum gibi popüler coinleri takip et.
+                    Hangi varlığa sahip olduğunu yaz, miktar ve maliyet ekle, sistem senin için kâr/zararı ve trendleri
+                    hesaplasın.
+                </p>
+                <div class="metric-grid">
+                    <article>
+                        <p class="label">Toplam Portföy Değeri</p>
+                        <h2 id="metricValue">$0</h2>
+                        <small>Güncel piyasa fiyatlarına göre</small>
+                    </article>
+                    <article>
+                        <p class="label">Toplam Maliyet</p>
+                        <h2 id="metricCost">$0</h2>
+                        <small>Girdiğin pozisyonların maliyeti</small>
+                    </article>
+                    <article>
+                        <p class="label">Net Kâr / Zarar</p>
+                        <h2 id="metricPnL">$0</h2>
+                        <small id="metricPnLPercent">0%</small>
+                    </article>
+                </div>
+            </div>
+            <div class="panel trending">
+                <div class="panel-head">
+                    <div>
+                        <p class="eyebrow">Öne çıkanlar</p>
+                        <h2>Günlük & haftalık hareket</h2>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Varlık</th>
+                                <th>Fiyat</th>
+                                <th>24s</th>
+                                <th>7g</th>
+                                <th>Piyasa değeri</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trendingBody">
+                            <tr>
+                                <td colspan="5">Veriler yükleniyor…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel custom">
+            <div class="panel-head">
+                <div>
+                    <p class="eyebrow">Kişisel alan</p>
+                    <h2>İstediğin varlığı ekle</h2>
+                </div>
+            </div>
+            <div id="alert" class="alert" role="status" aria-live="polite"></div>
+            <div class="custom-grid">
+                <form id="assetForm" class="asset-form">
+                    <label for="assetSymbol">Varlık sembolü</label>
+                    <div class="symbol-input">
+                        <input type="text" id="assetSymbol" placeholder="BTC, ETH, SOL..." autocomplete="off" required>
+                        <ul class="symbol-suggestions" id="symbolSuggestions" role="listbox" aria-live="polite"></ul>
+                    </div>
+
+                    <label for="assetAmount">Miktar</label>
+                    <input type="number" step="any" min="0" id="assetAmount" placeholder="0.5" required>
+
+                    <label for="assetCost">Birim maliyet (USD)</label>
+                    <input type="number" step="any" min="0" id="assetCost" placeholder="35000" required>
+
+                    <button type="submit" class="cta-btn">Varlık ekle</button>
+                </form>
+
+                <div class="custom-list">
+                    <div class="panel-head small">
+                        <div>
+                            <p class="eyebrow">Pozisyonlar</p>
+                            <h3>Canlı güncellenir</h3>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Varlık</th>
+                                    <th>Miktar</th>
+                                    <th>Birim maliyet</th>
+                                    <th>Anlık fiyat</th>
+                                    <th>Değer</th>
+                                    <th>Kâr / Zarar</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="assetTableBody">
+                                <tr>
+                                    <td colspan="7">Henüz varlık eklenmedi.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <div class="panel-head small">
+                    <div>
+                        <p class="eyebrow">Analiz</p>
+                        <h3>Kâr / zarar dağılımı</h3>
+                    </div>
+                    <button class="ghost-btn small" id="clearAssets">Tümünü sil</button>
+                </div>
+                <canvas id="plChart" width="720" height="320" aria-label="Profit and loss bar chart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>AssetPulse · CoinMarketCap API verileri eğitim amaçlı kullanılmaktadır.</p>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+</body>
+
+</html>
