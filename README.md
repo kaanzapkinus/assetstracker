@@ -1,43 +1,49 @@
-# Assets Tracker (Web Design & Development project)
+﻿# Assets Tracker (Web Design & Development project)
 
-This repository now contains only the Assets Tracker project we built for the Web Design & Development course. The brief required:
+All project files now live under ssetstracker/ on the desktop. The brief required:
 
 - A custom front-end (HTML/CSS/JS only) with live data
 - A UI/UX concept that feels polished without frameworks
 - An API integration (CoinMarketCap) plus a small full-stack touch
 
-## What’s inside
+## Folder layout
 
-```
+`
+assetstracker/
 ├─ index.html        # main dashboard UI
 ├─ styles.css        # aurora theme and responsive layout
 ├─ app.js            # CoinMarketCap integration + state management
 ├─ server.py         # Python proxy hiding the API key
 ├─ coinmarket.ini    # local API key holder (do not commit secrets in production!)
-├─ test.html         # quick BTC-price tester for the proxy
-```
+└─ test.html         # quick BTC-price tester for the proxy
+`
 
-## Run locally
+## Terminal commands to launch everything
 
-1. **Install dependencies** (only `requests` is required):
-   ```bash
+Run these commands exactly (each block in its own terminal window):
+
+1. **Install dependencies once**
+   `ash
+   cd "%USERPROFILE%\\Desktop\\assetstracker"
    pip install requests python-dateutil pytz
-   ```
-2. **Start the CoinMarketCap proxy**:
-   ```bash
+   `
+2. **Start the CoinMarketCap proxy**
+   `ash
+   cd "%USERPROFILE%\\Desktop\\assetstracker"
    python server.py
-   ```
-3. **Serve the front-end** in another terminal:
-   ```bash
+   `
+3. **Start the front-end server (new terminal)**
+   `ash
+   cd "%USERPROFILE%\\Desktop\\assetstracker"
    python -m http.server 5500
-   ```
-   Then open http://localhost:5500/ in your browser (or `/test.html` to verify the API key quickly).
+   `
+4. Open http://localhost:5500/ in the browser (or /test.html to verify the API key quickly).
 
 ## Highlights
 
 - Trending cards with live 24h / 7d data
 - Custom holdings form with autocomplete ticker input
 - Profit/loss analytics with a canvas-based chart
-- Python proxy (HTTPServer + `requests`) to keep the API key private and bypass CORS
+- Python proxy (HTTPServer + equests) to keep the API key private and bypass CORS
 
-`version1` is our initial release for the class submission; future tweaks can build from this minimal codebase.
+ersion1 is our initial release for the class submission; future tweaks can build from this minimal codebase.
