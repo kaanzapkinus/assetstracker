@@ -162,7 +162,7 @@ button {
 
 .intro h1 {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(32px, 8vw, 56px);
+    font-size: clamp(28px, 6vw, 46px);
     margin: 10px 0 16px;
 }
 
@@ -268,6 +268,104 @@ tbody tr:hover {
 .trend-negative,
 .negative {
     color: var(--danger);
+}
+
+.insights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.insight-tabs {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+    padding: 6px;
+}
+
+.tab-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text);
+}
+
+.insight-view {
+    display: none;
+}
+
+.insight-view.active {
+    display: block;
+}
+
+.timeline-controls {
+    display: inline-flex;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 16px;
+}
+
+.timeline-btn {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    border-radius: 999px;
+    padding: 6px 14px;
+}
+
+.timeline-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text);
+}
+
+#timelineChart,
+#allocationChart {
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    display: block;
+}
+
+.chart-note {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.allocation-legend {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.allocation-legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.allocation-legend .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 
 .custom {

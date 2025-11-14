@@ -43,9 +43,9 @@
 
 <body>
     <h1>CoinMarketCap API Test</h1>
-    <p class="status" id="status">Hazır. "Test et" tuşuna basınca proxy üzerinden BTC fiyatı istenecek.</p>
-    <button id="testBtn">Test et</button>
-    <pre id="output">Bekleniyor...</pre>
+    <p class="status" id="status">Ready. Click "Run Test" to fetch the BTC price through the proxy.</p>
+    <button id="testBtn">Run Test</button>
+    <pre id="output">Waiting...</pre>
 
     <script>
         const btn = document.getElementById('testBtn');
@@ -54,7 +54,7 @@
 
         btn.addEventListener('click', async () => {
             btn.disabled = true;
-            status.textContent = 'İstek gönderiliyor...';
+            status.textContent = 'Sending request...';
             output.textContent = '...';
             try {
                 const response = await fetch('http://127.0.0.1:5050/api/quotes?symbols=BTC');
@@ -63,10 +63,12 @@
                 }
                 const data = await response.json();
                 const btc = data?.data?.BTC?.quote?.USD?.price;
-                status.textContent = btc ? `Başarılı · BTC fiyatı: ${btc.toFixed(2)} USD` : 'Başarılı ama veri beklenen formatta gelmedi.';
+                status.textContent = btc
+                    ? `Success - BTC price: ${btc.toFixed(2)} USD`
+                    : 'Success but the payload was unexpected.';
                 output.textContent = JSON.stringify(data, null, 2);
             } catch (error) {
-                status.textContent = 'Hata oluştu. Proxy çalışıyor mu? Konsolu kontrol edin.';
+                status.textContent = 'Request failed. Is the proxy running? Check the server console.';
                 output.textContent = error.message;
             } finally {
                 btn.disabled = false;

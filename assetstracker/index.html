@@ -24,63 +24,80 @@
             </div>
         </div>
         <div class="status">
-            <p class="timestamp" id="lastUpdated">Veri bekleniyor…</p>
-            <button class="ghost-btn small" id="refreshAll">Yenile</button>
+            <p class="timestamp" id="lastUpdated">Waiting for live data...</p>
+            <button class="ghost-btn small" id="refreshAll">Refresh</button>
         </div>
     </header>
 
     <main>
         <section class="hero">
             <div class="intro">
-                <p class="eyebrow">Gerçek zamanlı kripto paneli</p>
-                <h1>Kendi varlık tahtanı yaz, kârını anında gör.</h1>
+                <p class="eyebrow">Live cockpit</p>
+                <h1>Build your own holdings board and watch profit instantly.</h1>
                 <p class="description">
-                    CoinMarketCap API’sinden gelen canlı fiyatlarla Bitcoin, Ethereum gibi popüler coinleri takip et.
-                    Hangi varlığa sahip olduğunu yaz, miktar ve maliyet ekle, sistem senin için kâr/zararı ve trendleri
-                    hesaplasın.
+                    Track Bitcoin, Ethereum and other majors with live CoinMarketCap prices.
+                    Log the assets you hold, include amount and cost, and AssetPulse calculates profit/loss and trends
+                    for you.
                 </p>
                 <div class="metric-grid">
                     <article>
-                        <p class="label">Toplam Portföy Değeri</p>
+                        <p class="label">Total portfolio value</p>
                         <h2 id="metricValue">$0</h2>
-                        <small>Güncel piyasa fiyatlarına göre</small>
+                        <small>Based on live market quotes</small>
                     </article>
                     <article>
-                        <p class="label">Toplam Maliyet</p>
+                        <p class="label">Total cost basis</p>
                         <h2 id="metricCost">$0</h2>
-                        <small>Girdiğin pozisyonların maliyeti</small>
+                        <small>Sum of every position you entered</small>
                     </article>
                     <article>
-                        <p class="label">Net Kâr / Zarar</p>
+                        <p class="label">Net profit / loss</p>
                         <h2 id="metricPnL">$0</h2>
                         <small id="metricPnLPercent">0%</small>
                     </article>
                 </div>
             </div>
-            <div class="panel trending">
+            <div class="panel insights">
                 <div class="panel-head">
-                    <div>
-                        <p class="eyebrow">Öne çıkanlar</p>
-                        <h2>Günlük & haftalık hareket</h2>
+                    <div class="insight-tabs" id="insightTabs" role="tablist" aria-label="Insight views">
+                        <button type="button" class="tab-btn active" data-insight="markets" aria-pressed="true">Markets</button>
+                        <button type="button" class="tab-btn" data-insight="timeline" aria-pressed="false">Portfolio
+                            timeline</button>
+                        <button type="button" class="tab-btn" data-insight="allocation" aria-pressed="false">Allocation</button>
                     </div>
                 </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Varlık</th>
-                                <th>Fiyat</th>
-                                <th>24s</th>
-                                <th>7g</th>
-                                <th>Piyasa değeri</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trendingBody">
-                            <tr>
-                                <td colspan="5">Veriler yükleniyor…</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="insight-view active" data-insight-view="markets">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Price</th>
+                                    <th>24h</th>
+                                    <th>7d</th>
+                                    <th>Market cap</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trendingBody">
+                                <tr>
+                                    <td colspan="5">Data is loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="insight-view" data-insight-view="timeline">
+                    <div class="timeline-controls" id="timelineControls" role="tablist" aria-label="Timeline ranges">
+                        <button type="button" class="timeline-btn active" data-range="1h" aria-pressed="true">1H</button>
+                        <button type="button" class="timeline-btn" data-range="24h" aria-pressed="false">24H</button>
+                        <button type="button" class="timeline-btn" data-range="7d" aria-pressed="false">7D</button>
+                    </div>
+                    <canvas id="timelineChart" width="560" height="320" aria-label="Portfolio timeline chart"></canvas>
+                    <p class="chart-note" id="timelineSummary">Waiting for positions...</p>
+                </div>
+                <div class="insight-view" data-insight-view="allocation">
+                    <canvas id="allocationChart" width="560" height="320" aria-label="Portfolio allocation donut"></canvas>
+                    <ul id="allocationLegend" class="allocation-legend"></ul>
                 </div>
             </div>
         </section>
@@ -88,51 +105,51 @@
         <section class="panel custom">
             <div class="panel-head">
                 <div>
-                    <p class="eyebrow">Kişisel alan</p>
-                    <h2>İstediğin varlığı ekle</h2>
+                    <p class="eyebrow">Your holdings</p>
+                    <h2>Add any asset you own</h2>
                 </div>
             </div>
             <div id="alert" class="alert" role="status" aria-live="polite"></div>
             <div class="custom-grid">
                 <form id="assetForm" class="asset-form">
-                    <label for="assetSymbol">Varlık sembolü</label>
+                    <label for="assetSymbol">Asset symbol</label>
                     <div class="symbol-input">
                         <input type="text" id="assetSymbol" placeholder="BTC, ETH, SOL..." autocomplete="off" required>
                         <ul class="symbol-suggestions" id="symbolSuggestions" role="listbox" aria-live="polite"></ul>
                     </div>
 
-                    <label for="assetAmount">Miktar</label>
+                    <label for="assetAmount">Amount</label>
                     <input type="number" step="any" min="0" id="assetAmount" placeholder="0.5" required>
 
-                    <label for="assetCost">Birim maliyet (USD)</label>
+                    <label for="assetCost">Cost per unit (USD)</label>
                     <input type="number" step="any" min="0" id="assetCost" placeholder="35000" required>
 
-                    <button type="submit" class="cta-btn">Varlık ekle</button>
+                    <button type="submit" class="cta-btn">Add asset</button>
                 </form>
 
                 <div class="custom-list">
                     <div class="panel-head small">
                         <div>
-                            <p class="eyebrow">Pozisyonlar</p>
-                            <h3>Canlı güncellenir</h3>
+                            <p class="eyebrow">Positions</p>
+                            <h3>Live auto-refresh</h3>
                         </div>
                     </div>
                     <div class="table-wrapper">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Varlık</th>
-                                    <th>Miktar</th>
-                                    <th>Birim maliyet</th>
-                                    <th>Anlık fiyat</th>
-                                    <th>Değer</th>
-                                    <th>Kâr / Zarar</th>
+                                    <th>Asset</th>
+                                    <th>Amount</th>
+                                    <th>Cost average</th>
+                                    <th>Spot price</th>
+                                    <th>Value</th>
+                                    <th>P/L</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody id="assetTableBody">
                                 <tr>
-                                    <td colspan="7">Henüz varlık eklenmedi.</td>
+                                    <td colspan="7">No assets added yet.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -143,10 +160,10 @@
             <div class="chart-panel">
                 <div class="panel-head small">
                     <div>
-                        <p class="eyebrow">Analiz</p>
-                        <h3>Kâr / zarar dağılımı</h3>
+                        <p class="eyebrow">Analytics</p>
+                        <h3>P/L distribution</h3>
                     </div>
-                    <button class="ghost-btn small" id="clearAssets">Tümünü sil</button>
+                    <button class="ghost-btn small" id="clearAssets">Clear all</button>
                 </div>
                 <canvas id="plChart" width="720" height="320" aria-label="Profit and loss bar chart"></canvas>
             </div>
@@ -154,7 +171,7 @@
     </main>
 
     <footer>
-        <p>AssetPulse · CoinMarketCap API verileri eğitim amaçlı kullanılmaktadır.</p>
+        <p>AssetPulse - CoinMarketCap API data is used for educational purposes.</p>
     </footer>
 
     <script src="app.js" type="module"></script>
