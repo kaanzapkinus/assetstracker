@@ -469,6 +469,77 @@ tbody tr:hover {
     width: 100%;
     height: auto;
     display: block;
+    max-height: 300px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.analytics-col {
+    display: flex;
+    flex-direction: column;
+}
+
+#allocationChartMain {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    display: block;
+    margin: 0 auto;
+}
+
+.history-section {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 24px;
+}
+
+.history-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.history-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.history-btn.active,
+.history-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+#historyChart {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    margin-top: 16px;
+    display: block;
+}
+
+.panel-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .alert {

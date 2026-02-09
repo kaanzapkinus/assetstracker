@@ -54,14 +54,6 @@ const TIMEFRAMES = [
   }
 ];
 
-const state = {
-  customAssets: loadAssets(),
-  quotes: {},
-  lastUpdated: null,
-  selectedRange: '1h',
-  activeInsight: 'markets'
-};
-
 const elements = {
   lastUpdated: document.getElementById('lastUpdated'),
   refreshAll: document.getElementById('refreshAll'),
@@ -74,24 +66,38 @@ const elements = {
   insightViews: document.querySelectorAll('[data-insight-view]'),
   timelineControls: document.getElementById('timelineControls'),
   timelineSummary: document.getElementById('timelineSummary'),
-  allocationLegend: document.getElementById('allocationLegend'),
+  allocationLegend: document.getElementById('allocationLegend'), // Keeping for safety, though unused
   alert: document.getElementById('alert'),
   assetForm: document.getElementById('assetForm'),
   assetSymbol: document.getElementById('assetSymbol'),
   assetAmount: document.getElementById('assetAmount'),
   assetCost: document.getElementById('assetCost'),
+  assetDate: document.getElementById('assetDate'),
   assetTableBody: document.getElementById('assetTableBody'),
   clearAssets: document.getElementById('clearAssets'),
   symbolSuggestions: document.getElementById('symbolSuggestions'),
-  symbolInputWrapper: document.querySelector('.symbol-input')
+  symbolInputWrapper: document.querySelector('.symbol-input'),
+  historyControls: document.getElementById('historyControls'),
+  allocationLegendMain: document.getElementById('allocationLegendMain')
 };
 
 const chartCanvas = document.getElementById('plChart');
 const chartCtx = chartCanvas?.getContext('2d');
 const timelineCanvas = document.getElementById('timelineChart');
 const timelineCtx = timelineCanvas?.getContext('2d');
-const allocationCanvas = document.getElementById('allocationChart');
+const allocationCanvas = document.getElementById('allocationChartMain');
 const allocationCtx = allocationCanvas?.getContext('2d');
+const historyCanvas = document.getElementById('historyChart');
+const historyCtx = historyCanvas?.getContext('2d');
+
+const state = {
+  customAssets: loadAssets(),
+  quotes: {},
+  lastUpdated: null,
+  selectedRange: '1h',
+  activeInsight: 'markets',
+  historyRange: '7d'
+};
 
 function loadAssets() {
   if (typeof window === 'undefined' || !window.localStorage) return [];
@@ -282,6 +288,9 @@ function renderTimelineChart(positions) {
     return;
   }
 
+  // existing logic...
+
+
   const currentValue = positions.reduce((sum, asset) => sum + asset.value, 0);
   const baseValue = getPortfolioValueForRange(state.selectedRange, positions) ?? currentValue;
   const steps = 8;
@@ -295,7 +304,13 @@ function renderTimelineChart(positions) {
 
   const minValue = Math.min(...values);
   const maxValue = Math.max(...values);
-  const range = Math.max(maxValue - minValue, 1);
+  let range = maxValue - minValue;
+
+  // If flat line (no change), center it
+  if (range === 0) {
+    range = baseValue * 0.1 || 1; // Arbitrary small range to center
+  }
+
   const padding = 30;
   timelineCtx.strokeStyle = 'rgba(255,255,255,0.15)';
   timelineCtx.lineWidth = 1;
@@ -306,7 +321,19 @@ function renderTimelineChart(positions) {
 
   const points = values.map((value, index) => {
     const x = padding + (index / (values.length - 1)) * (width - padding * 2);
-    const y = height - padding - ((value - minValue) / range) * (height - padding * 2);
+    // Calculate Y: if range was 0, we center it. Otherwise scale normally.
+    const normalized = (value - minValue) / range;
+    // If original range was 0, normalized is 0 (from the loop), but we want it centered (0.5)
+    // Actually if original range was 0, maxValue == minValue == value.
+    // So (value - minValue) is 0. 0/range is 0.
+    // We want to offset it to center if it was a flat line.
+
+    let yRatio = normalized;
+    if (maxValue === minValue) {
+      yRatio = 0.5;
+    }
+
+    const y = height - padding - yRatio * (height - padding * 2);
     return { x, y };
   });
 
@@ -370,8 +397,8 @@ function renderAllocationChart(positions) {
     allocationCtx.fillStyle = 'rgba(255,255,255,0.6)';
     allocationCtx.font = '16px "Inter", sans-serif';
     allocationCtx.fillText('Add holdings to see allocation.', 30, height / 2);
-    if (elements.allocationLegend) {
-      elements.allocationLegend.innerHTML = '';
+    if (elements.allocationLegendMain) {
+      elements.allocationLegendMain.innerHTML = '';
     }
     return;
   }
@@ -397,8 +424,8 @@ function renderAllocationChart(positions) {
   allocationCtx.arc(width / 2, height / 2, radius * 0.5, 0, Math.PI * 2);
   allocationCtx.fill();
 
-  if (elements.allocationLegend) {
-    elements.allocationLegend.innerHTML = positions
+  if (elements.allocationLegendMain) {
+    elements.allocationLegendMain.innerHTML = positions
       .map((asset, index) => {
         const color = ALLOCATION_COLORS[index % ALLOCATION_COLORS.length];
         const sharePct = totalValue ? ((asset.value / totalValue) * 100).toFixed(1) : '0.0';
@@ -424,8 +451,6 @@ function renderInsights(positions) {
 
   if (state.activeInsight === 'timeline') {
     renderTimelineChart(positions);
-  } else if (state.activeInsight === 'allocation') {
-    renderAllocationChart(positions);
   }
 }
 
@@ -551,6 +576,8 @@ function renderLastUpdated() {
     : 'Waiting for live data...';
 }
 
+
+
 function render() {
   const positions = getPositions();
   renderMetrics(positions);
@@ -558,8 +585,11 @@ function render() {
   renderChart(positions);
   renderTrending();
   renderInsights(positions);
+  renderAllocationChart(positions);
   renderLastUpdated();
 }
+
+
 
 async function fetchQuotes(symbols) {
   const uniqueSymbols = [...new Set(symbols.map((sym) => sym.toUpperCase()).filter(Boolean))];
@@ -634,6 +664,8 @@ elements.assetForm?.addEventListener('submit', async (event) => {
   const symbol = elements.assetSymbol.value.trim().toUpperCase();
   const amount = parseFloat(elements.assetAmount.value);
   const cost = parseFloat(elements.assetCost.value);
+  const dateInput = elements.assetDate?.value;
+  const dateAdded = dateInput ? new Date(dateInput).toISOString() : new Date().toISOString();
 
   if (!symbol || !amount || amount <= 0 || isNaN(cost) || cost < 0) {
     setAlert('Please provide a valid symbol, amount and cost.', 'error');
@@ -662,7 +694,8 @@ elements.assetForm?.addEventListener('submit', async (event) => {
         id: uniqueId,
         symbol,
         amount,
-        cost
+        cost,
+        dateAdded
       }
     ];
     saveAssets();

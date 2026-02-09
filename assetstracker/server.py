@@ -1,7 +1,7 @@
 import configparser
 import json
 import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -36,7 +36,7 @@ SESSION.headers.update(
 )
 
 
-class ProxyHandler(BaseHTTPRequestHandler):
+class ProxyHandler(SimpleHTTPRequestHandler):
     server_version = "CMCProxy/1.1"
 
     def log_message(self, fmt, *args):
@@ -56,10 +56,9 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
-        if parsed.path != "/api/quotes":
-            self._set_headers(404)
-            self.wfile.write(json.dumps({"error": "Not found"}).encode())
-            return
+        if not parsed.path.startswith("/api/quotes"):
+            # Serve static files
+            return super().do_GET()
 
         query = parse_qs(parsed.query)
         symbols = query.get("symbols", [""])[0].upper()

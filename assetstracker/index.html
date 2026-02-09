@@ -60,10 +60,10 @@
             <div class="panel insights">
                 <div class="panel-head">
                     <div class="insight-tabs" id="insightTabs" role="tablist" aria-label="Insight views">
-                        <button type="button" class="tab-btn active" data-insight="markets" aria-pressed="true">Markets</button>
+                        <button type="button" class="tab-btn active" data-insight="markets"
+                            aria-pressed="true">Markets</button>
                         <button type="button" class="tab-btn" data-insight="timeline" aria-pressed="false">Portfolio
                             timeline</button>
-                        <button type="button" class="tab-btn" data-insight="allocation" aria-pressed="false">Allocation</button>
                     </div>
                 </div>
                 <div class="insight-view active" data-insight-view="markets">
@@ -88,17 +88,15 @@
                 </div>
                 <div class="insight-view" data-insight-view="timeline">
                     <div class="timeline-controls" id="timelineControls" role="tablist" aria-label="Timeline ranges">
-                        <button type="button" class="timeline-btn active" data-range="1h" aria-pressed="true">1H</button>
+                        <button type="button" class="timeline-btn active" data-range="1h"
+                            aria-pressed="true">1H</button>
                         <button type="button" class="timeline-btn" data-range="24h" aria-pressed="false">24H</button>
                         <button type="button" class="timeline-btn" data-range="7d" aria-pressed="false">7D</button>
                     </div>
                     <canvas id="timelineChart" width="560" height="320" aria-label="Portfolio timeline chart"></canvas>
                     <p class="chart-note" id="timelineSummary">Waiting for positions...</p>
                 </div>
-                <div class="insight-view" data-insight-view="allocation">
-                    <canvas id="allocationChart" width="560" height="320" aria-label="Portfolio allocation donut"></canvas>
-                    <ul id="allocationLegend" class="allocation-legend"></ul>
-                </div>
+
             </div>
         </section>
 
@@ -123,6 +121,9 @@
 
                     <label for="assetCost">Cost per unit (USD)</label>
                     <input type="number" step="any" min="0" id="assetCost" placeholder="35000" required>
+
+                    <label for="assetDate">Date Added</label>
+                    <input type="date" id="assetDate" lang="en-GB">
 
                     <button type="submit" class="cta-btn">Add asset</button>
                 </form>
@@ -158,14 +159,34 @@
             </div>
 
             <div class="chart-panel">
-                <div class="panel-head small">
-                    <div>
-                        <p class="eyebrow">Analytics</p>
-                        <h3>P/L distribution</h3>
+                <div class="analytics-grid">
+                    <div class="analytics-col">
+                        <div class="panel-head small">
+                            <div>
+                                <p class="eyebrow">Analytics</p>
+                                <h3>P/L Distribution</h3>
+                            </div>
+                        </div>
+                        <canvas id="plChart" width="450" height="300" aria-label="Profit and loss bar chart"></canvas>
                     </div>
-                    <button class="ghost-btn small" id="clearAssets">Clear all</button>
+                    <div class="analytics-col">
+                        <div class="panel-head small">
+                            <div>
+                                <p class="eyebrow">Portfolio</p>
+                                <h3>Allocation</h3>
+                            </div>
+                        </div>
+                        <canvas id="allocationChartMain" width="300" height="300"
+                            aria-label="Portfolio allocation donut"></canvas>
+                        <ul id="allocationLegendMain" class="allocation-legend"></ul>
+                    </div>
                 </div>
-                <canvas id="plChart" width="720" height="320" aria-label="Profit and loss bar chart"></canvas>
+
+
+
+                <div class="panel-footer">
+                    <button class="ghost-btn small" id="clearAssets">Clear all assets</button>
+                </div>
             </div>
         </section>
     </main>
