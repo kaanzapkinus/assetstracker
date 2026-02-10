@@ -122,8 +122,8 @@
                     <label for="assetCost">Cost per unit (USD)</label>
                     <input type="number" step="any" min="0" id="assetCost" placeholder="35000" required>
 
-                    <label for="assetDate">Date Added</label>
-                    <input type="date" id="assetDate" lang="en-GB">
+                    <label for="assetDate">Date Added (DD/MM/YYYY)</label>
+                    <input type="text" id="assetDate" placeholder="25/12/2024" maxlength="10">
 
                     <button type="submit" class="cta-btn">Add asset</button>
                 </form>
@@ -167,7 +167,7 @@
                                 <h3>P/L Distribution</h3>
                             </div>
                         </div>
-                        <canvas id="plChart" width="450" height="300" aria-label="Profit and loss bar chart"></canvas>
+                        <canvas id="plChart" width="900" height="350" aria-label="Profit and loss bar chart"></canvas>
                     </div>
                     <div class="analytics-col">
                         <div class="panel-head small">
@@ -176,7 +176,7 @@
                                 <h3>Allocation</h3>
                             </div>
                         </div>
-                        <canvas id="allocationChartMain" width="300" height="300"
+                        <canvas id="allocationChartMain" width="600" height="300"
                             aria-label="Portfolio allocation donut"></canvas>
                         <ul id="allocationLegendMain" class="allocation-legend"></ul>
                     </div>

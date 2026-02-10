@@ -1,53 +1,50 @@
-﻿# Assets Tracker (Web Design & Development project)
+# AssetPulse
 
-All project files now live under ssetstracker/ on the desktop. The brief required:
+AssetPulse is a modern, real-time crypto portfolio tracker powered by the CoinMarketCap API. Track your holdings, view profit/loss analysis, and monitor market trends in a beautiful, dark-mode interface.
 
-- A custom front-end (HTML/CSS/JS only) with live data
-- A UI/UX concept that feels polished without frameworks
-- An API integration (CoinMarketCap) plus a small full-stack touch
+## Features
 
-## Folder layout
+- **Real-time Data**: Fetches live prices and market data from CoinMarketCap.
+- **Portfolio Tracking**: Add your assets, tracking amount and cost basis.
+- **Profit/Loss Analysis**: Instantly see your gains/losses per asset and for the total portfolio.
+- **Interactive Graphs**: Visual timeline of simulated portfolio value and allocation charts.
+- **Trending Markets**: Watch top cryptocurrencies and their 24h/7d performance.
+- **Privacy Focused**: Data is stored locally in your browser.
 
-`
-assetstracker/
-├─ index.html        # main dashboard UI
-├─ styles.css        # aurora theme and responsive layout
-├─ app.js            # CoinMarketCap integration + state management
-├─ server.py         # Python proxy hiding the API key
-├─ coinmarket.ini    # local API key holder (do not commit secrets in production!)
-└─ test.html         # quick BTC-price tester for the proxy
-`
+## Installation
 
-## Terminal commands to launch everything
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/kaanzapkinus/assetstracker.git
+    cd assetstracker
+    ```
 
-Run these commands exactly (each block in its own terminal window):
+2.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-1. **Install dependencies once**
-   `powershell
-   pip install requests python-dateutil pytz
-   `
-2. **Start the CoinMarketCap proxy**
-   `powershell
-   python server.py
-   `
-3. **Start the front-end server (new terminal)**
-   `powershell
-   python -m http.server 5500
-   `
-4. Open http://localhost:5500/ in the browser (or /test.html to verify the API key quickly).
+3.  (Optional) Set up your API Key:
+    - Get a free API key from [CoinMarketCap](https://coinmarketcap.com/api/).
+    - Create a `coinmarket.ini` file in the root directory:
+      ```ini
+      [DEFAULT]
+      API_KEY = your_actual_api_key_here
+      ```
+    - Or set it as an environment variable: `CMC_API_KEY`.
 
-### Tek satırda ikisini de başlatmak için (terminal zaten klasördeyken)
+## Usage
 
-`powershell
-Start-Process powershell -ArgumentList '-NoExit','-Command','python server.py'; Start-Process powershell -ArgumentList '-NoExit','-Command','python -m http.server 5500'
-`
+1.  Start the local proxy server:
+    ```bash
+    python server.py
+    ```
 
-## Highlights
+2.  Open `index.html` in your web browser (or use a live server extension).
 
-- Trending cards with live 24h / 7d data
-- Custom holdings form with autocomplete ticker input
-- Profit/loss analytics with a canvas-based chart
-- Python proxy (HTTPServer + 
-equests) to keep the API key private and bypass CORS
+3.  Start adding your assets to the portfolio!
 
-ersion1 is our initial release for the class submission; future tweaks can build from this minimal codebase.
+## Technologies
+
+- **Frontend**: HTML5, CSS3 (Custom properties, Flexbox/Grid), Vanilla JavaScript.
+- **Backend**: Python (Simple HTTP Server for API proxying).
