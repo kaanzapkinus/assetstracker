@@ -167,7 +167,7 @@ AssetPulse was developed by:
 - **Kaan Yazıcıoğlu** - Frontend Development & UI/UX Design
 - **Sedat Kara** - Backend API Integration & Server Implementation
 
-Created: February 2026
+Created: November 2025 - February 2026
 
 ## 📄 License
 
