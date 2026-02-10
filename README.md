@@ -47,7 +47,7 @@ A sophisticated, real-time cryptocurrency portfolio tracker powered by the CoinM
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/yourusername/assetpulse.git
+git clone
 cd assetpulse
 ```
 
@@ -67,7 +67,7 @@ You have two options to provide your CoinMarketCap API key:
 Create a `coinmarket.ini` file in the project root directory:
 ```ini
 [DEFAULT]
-API_KEY = your_api_key_here
+API_KEY = your_api_key_here !
 ```
 
 #### Option B: Using Environment Variable
@@ -100,8 +100,8 @@ set CMC_API_KEY=your_api_key_here
    - Use a local server (recommended):
      ```bash
      # Using Python 3
-     python -m http.server 8000
-     # Then visit http://localhost:8000/index.html
+     python -m http.server 8000 // default 5050
+     # Then visit http://localhost:8000/
      ```
 
 3. **Add your assets:**
