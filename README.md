@@ -163,7 +163,7 @@ Price Data → localStorage → Canvas Charts
 
 AssetPulse was developed by:
 
-- **Caner Akcasu** - Core Architecture & Portfolio Analytics
+- **Caner Akcasu** - Core Architecture & Portfolio Analytics - Final Report
 - **Kaan Yazıcıoğlu** - Frontend Development & UI/UX Design
 - **Sedat Kara** - Backend API Integration & Server Implementation
 
