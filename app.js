@@ -94,7 +94,7 @@ const state = {
   customAssets: loadAssets(),
   quotes: {},
   lastUpdated: null,
-  selectedRange: '1h',
+  selectedRange: '1d',
   activeInsight: 'markets',
   historyRange: '7d'
 };
@@ -352,9 +352,15 @@ function renderTimelineChart(positions) {
   timelineCtx.imageSmoothingEnabled = true;
   timelineCtx.imageSmoothingQuality = 'high';
 
-  // Timeline controls not used for daily P/L
+  // Show timeline controls
   if (elements.timelineControls) {
-    elements.timelineControls.style.display = 'none';
+    elements.timelineControls.style.display = 'flex';
+    // Update button states
+    elements.timelineControls.querySelectorAll('button[data-range]').forEach((btn) => {
+      const isActive = btn.dataset.range === state.selectedRange;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
   }
 
   if (!positions.length) {
@@ -371,7 +377,19 @@ function renderTimelineChart(positions) {
   }
 
   // Generate daily P/L data
-  const dailyData = generateDailyPnLData(positions);
+  let dailyData = generateDailyPnLData(positions);
+  
+  // Filter data based on selected range
+  const rangeMap = {
+    '1d': 1,
+    '7d': 7,
+    '30d': 30
+  };
+  const daysToShow = rangeMap[state.selectedRange] || 1;
+  
+  if (dailyData.length > daysToShow) {
+    dailyData = dailyData.slice(-daysToShow);
+  }
   
   const padding = { top: 20, bottom: 40, left: 50, right: 20 };
   const chartWidth = width - padding.left - padding.right;
@@ -468,11 +486,19 @@ function renderTimelineChart(positions) {
   const totalCost = positions.reduce((sum, asset) => sum + asset.cost, 0);
   const pnlPct = totalCost ? (totalPnL / totalCost) * 100 : 0;
   
+  const rangeLabelMap = {
+    '1d': '1-day',
+    '7d': '7-day',
+    '30d': '30-day'
+  };
+  const rangeLabel = rangeLabelMap[state.selectedRange] || '30-day';
+  
   if (elements.timelineSummary) {
-    elements.timelineSummary.textContent = `30-day P/L: ${formatCurrency(totalPnL)} (${formatPercent(pnlPct)})`;
+    elements.timelineSummary.textContent = `${rangeLabel} P/L: ${formatCurrency(totalPnL)} (${formatPercent(pnlPct)})`;
     elements.timelineSummary.classList.remove('positive', 'negative');
     elements.timelineSummary.classList.add(totalPnL >= 0 ? 'positive' : 'negative');
   }
+
 }
 
 function renderAllocationChart(positions) {
